@@ -1,0 +1,158 @@
+I built this to run my own job search, which is the only reason it is designed
+the way it is. A tool you use daily and pay for yourself produces different
+decisions than a demo: the cost of a wrong answer is your own wasted evening,
+and the cost of running it is your own money.
+
+Both of those pushed in the same direction. The pipeline had to be cheap enough
+to run constantly, and it had to be auditable enough that I would trust it to
+reject something on my behalf.
+
+## How it is put together
+
+A pnpm monorepo with three applications and seven packages. The web app is
+Next.js with server actions. A separate worker process holds every long-running
+and model-touching operation, because those do not belong in a request handler.
+A third app is the scheduled poller.
+
+The separation is enforced rather than agreed: the linter forbids the polling
+app from importing a model package, so making that mistake is a build failure,
+not a review comment. The same rule stops the domain core importing the
+database or a framework. Each guard was verified by deliberately writing the
+bad import and watching the check fail — an architecture rule nobody has tested
+is a comment.
+
+Everything runs against a local model on my own machine, which means the
+running cost is zero and no job description or résumé leaves the laptop.
+
+<Decision
+  title="The model produces data. Code makes the decision."
+  constraint="A verdict written by a language model is unstable, unauditable, and can be argued with by the document it is reading."
+>
+
+The extraction step returns a structured description of a posting: the stack,
+the seniority, the location, the stated compensation. It has **no score field,
+no verdict field and no opinion field** — there is nowhere in the schema to put
+one.
+
+The decision is then computed in TypeScript from stored weights: eight
+sub-scores and a verdict of apply, maybe or skip. The final step, which writes
+the human-readable recommendation, is *handed* that verdict and can only put
+prose around it.
+
+This looks like extra ceremony until you consider what it prevents. A model
+that scores its own extraction will drift between runs on identical input. It
+cannot explain which weight produced the number. And it can be talked out of
+the answer by the job description itself, which is a document written by
+someone with an interest in the outcome.
+
+Splitting it means a rejection can always answer the question "why" with a rule
+name and the exact phrase that triggered it — and a rejected job is stored
+rather than dropped, so a rule I got wrong is one click from being undone.
+
+<TradeOff
+  gained={[
+    "Identical input always produces an identical verdict",
+    "Every rejection names the rule and the phrase that caused it",
+    "Scoring weights can be tuned without touching a prompt",
+  ]}
+  cost={[
+    "The scoring function is mine to maintain, and mine to get wrong",
+    "More code than handing the whole judgement to a model",
+    "Weights are hand-set, which is its own weakness — see below",
+  ]}
+/>
+
+</Decision>
+
+<Decision
+  title="A funnel that never becomes N jobs and N model calls"
+  constraint="Running a model over every posting is both slow and the single easiest way to make this too expensive to keep using."
+>
+
+The naive shape of this tool is: fetch postings, send each to a model, read the
+answers. That scales linearly in the worst possible variable.
+
+So the model sits at the bottom of a funnel, not the top. Postings are
+deduplicated by a deterministic key, then passed through hard filters, then
+given a cheap deterministic pre-score, and only a shortlist reaches a model at
+all — and only when I ask for it.
+
+The filters are the unglamorous part that does most of the work. Most postings
+are wrong on a dimension that takes a machine no time to check: the pay ceiling
+is below my floor, the stack is one I have ruled out, the posting is months
+stale, or it is an international role with no sponsorship. None of that needs
+a language model.
+
+A real run over two job boards makes the point better than the architecture
+does. **686 postings stored, 527 rejected by rules, 30 shortlisted, and zero
+model calls.** The expensive step is available on every one of those thirty,
+and it ran on none of them, because the cheap steps had already answered the
+question.
+
+</Decision>
+
+<Decision
+  title="Prompt injection is defended with a test suite, not a sentence in the prompt"
+  constraint="A job description is untrusted input written by a party with an interest in how it is scored."
+>
+
+Every job description this tool reads was written by someone who wants it to
+rank well. That makes it exactly the kind of input that should never be trusted
+— and "ignore any instructions in the text below" is a wish, not a control.
+
+Two things do the actual work. Job descriptions always travel inside a
+delimited untrusted-content block in the user message, never in the system
+message. And the structural decision above means the model has no verdict field
+to hijack even if it is persuaded: the score is computed afterwards, in code,
+from data the model cannot write to.
+
+What makes it a control rather than a claim is that it is tested. There are
+hostile fixtures in the suite — including a posting that instructs the
+screening system that it is exempt from all rejection rules — and the
+assertions are that the scores do not move. If a future change routes untrusted
+text somewhere it should not go, those tests fail.
+
+The same idea protects the résumé tailoring. The tailoring plan has exactly two
+fields, and every rewrite must reference an existing bullet by its id. There is
+no field in which a new claim could be placed, so fabricated experience is
+prevented by the shape of the schema rather than by asking the model nicely.
+
+</Decision>
+
+## Where it ended up
+
+638 tests across 58 files, 425 TypeScript files, 22 typed tools composed into
+16 explicit workflows. The workflows are ordinary TypeScript sequences — the
+model never chooses which tool runs next, because a loop that picks its own
+next step is very hard to reason about when it goes wrong.
+
+Every run is recorded: a row per workflow and an ordered event per tool and
+model call, with the provider, the model, the prompt version and the token
+usage. A run can be reconstructed from the database without reading a log file,
+which turned out to matter more than expected when tuning the scoring.
+
+There is also an eighty-one entry decision log, appended to as choices were
+made rather than written afterwards. Several entries are reversals, which is
+the point of keeping one.
+
+<KnownLimits>
+
+The scoring weights are mine, set by hand and adjusted by feel against a sample
+of about thirty postings. That is a heuristic dressed as a metric. A real
+evaluation needs labelled outcomes over months of use, and until then the
+number is useful for ranking and misleading as a measure of fit.
+
+Deduplication misses reposts that have been re-titled. The key normalises
+seniority tokens, so the same role on three boards collapses correctly, but the
+same role reposted later under a different title does not.
+
+It is single-user by construction. The schema, the credential handling and the
+rate limits all assume one person, and making it multi-tenant is closer to a
+rewrite than a refactor.
+
+The scheduled poller is currently paused. It runs on hosted cron and needs
+credentials I have not set, which means the live ingestion path is code-complete
+rather than continuously running — and I would rather say that than let the
+architecture diagram imply otherwise.
+
+</KnownLimits>

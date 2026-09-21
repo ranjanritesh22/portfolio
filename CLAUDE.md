@@ -284,6 +284,12 @@ Frontmatter would be a second untyped source of truth for the exact numbers
 **D10.** `caseStudy` is optional on `Project`, so the home page cannot link an
 unwritten case study. This is what keeps the site shippable after Phase 3.
 
+**D11.** D10 did not hold, and shipped two 404s. The field gates the link, but
+nothing checked that the slug corresponded to a file, so setting it early
+defeated the guard silently. `tests/links-resolve.test.ts` now asserts the file
+exists. The lesson is the general one: a rule enforced by remembering is not
+enforced, and every guard needs a test that fails when the guard is bypassed.
+
 ---
 
 # PART E — PHASES
@@ -294,9 +300,9 @@ unwritten case study. This is what keeps the site shippable after Phase 3.
 | 1 | Design tokens + 8 primitives + theme toggle | **DONE** |
 | 2 | Content layer + invariant tests | **DONE** |
 | 3 | Home page, all eight sections | **DONE** |
-| 4 | Case study: Aura (MDX pipeline + layout + write-up) | next |
-| 5 | Case study: Job Switch Agent | |
-| 6 | Real screenshots and figures | |
+| 4 | Case study: Aura (MDX pipeline + layout + write-up) | **DONE** |
+| 5 | Case study: Job Switch Agent | **DONE** |
+| 6 | Real screenshots and figures | next |
 | 7 | SEO, OG images, Lighthouse, a11y | |
 | 8 | Domain, DNS, launch | |
 | 9 | Project demos — Storybook, healthdecode, Aura URL | separate track |

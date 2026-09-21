@@ -1,0 +1,179 @@
+Aura started as a finance tracker and turned into something harder to name: a
+single app for the parts of life that each normally need their own tool. Money,
+travel, career history, and a job search. Four modules, one Postgres schema,
+one deploy, built solo over about seven weeks.
+
+The reason it is worth writing up is not the feature count. It is that a few
+early decisions about where correctness should live — in the database rather
+than in the client, in types rather than in discipline — are what made four
+modules possible at that pace without the third one breaking the first.
+
+## How it is put together
+
+Next.js App Router on Cloudflare Workers, Supabase Postgres underneath, and
+TanStack Query in between. Every one of the 38 page routes is a Server
+Component that fetches directly; the client work sits below it in a view
+component.
+
+The part people find surprising is that **there is no per-entity API layer at
+all**. No `/api/transactions`, no `/api/trips`. Row-level security made one
+unnecessary: the client queries Postgres directly, and the database decides
+what that user is allowed to see. Forty-six tables, forty-six `enable row level
+security` statements, about a hundred and seventy policies. The first migration
+says it plainly — no table may be queried without RLS enabled, because
+client-side filtering is not trusted.
+
+The thirty-three route handlers that do exist are for things that genuinely
+need a server: authentication, the cron endpoints, the three AI calls, OAuth,
+and email ingestion.
+
+<Decision
+  title="A card's position is a string, not an index"
+  constraint="Dragging a card between columns must write one row, not N — and it has to stay correct while a background worker writes to the same table."
+>
+
+The obvious model for an ordered board is an integer `position` column. It is
+also the wrong one. Move a card to the top of a column and every card below it
+has to be renumbered: N writes, wrapped in a transaction, racing the poller
+that is inserting new jobs into the same column.
+
+So position is a **string that sorts between its neighbours**. Dropping a card
+computes a new key between the two it landed between, and writes exactly one
+row — the moved one. The alphabet is base-62 in ASCII order, which means
+Postgres `order by board_rank` and JavaScript `Array.sort()` produce the same
+sequence without either side knowing about the other.
+
+The invariant that makes it work is small and easy to get wrong: **a key never
+ends with the lowest character**. Without that rule there is no key between the
+empty string and `"0"`, because every string starting with `"0"` sorts *after*
+`"0"` — so prepending to a column would eventually become impossible. Forbid
+the trailing character and every gap stays splittable forever. It is about a
+hundred and fifty lines with no dependency, and the test suite asserts the
+invariant rather than trusting it.
+
+That is also what makes the optimistic update honest. The mutation's `onMutate`
+rewrites exactly one row in the cache — stage and rank — so the card lands
+under the cursor with no round trip and nothing else shifting. On failure the
+snapshot is restored verbatim, because undoing a drag field by field drifts.
+
+Two details that only show up in use: `applied_at` is stamped once and never
+overwritten, since it anchors the posting-to-application latency metric and a
+later move between interview rounds must not reset it. And dragging with a
+keyboard is announced to screen readers through dnd-kit's announcement API,
+because a board that only works with a mouse is a board that only works for
+some people.
+
+<TradeOff
+  gained={[
+    "One row written per reorder, at any board size",
+    "No transaction, and no race with the background poller",
+    "The same ordering in Postgres and in the browser, for free",
+  ]}
+  cost={[
+    "Keys grow as gaps are repeatedly split, so a rebalance threshold is needed",
+    "An invariant a future contributor could break without a type error",
+    "Harder to eyeball in the database than 1, 2, 3",
+  ]}
+/>
+
+</Decision>
+
+<Decision
+  title="A table with row-level security on and no policies at all"
+  constraint="Third-party API keys are stored per user. A `select('*')` added in a hurry two years from now must not be able to return them."
+>
+
+An earlier version protected its OAuth tokens by convention: everyone knew not
+to select that column. That works exactly as long as everyone remembers, and
+remembering is not a security control.
+
+So the data was split. Metadata about each integration lives in one table under
+the usual four policies. The ciphertext lives in a second table with **RLS
+enabled and no policies whatsoever** — which means it is deny-all for every
+client role, whatever query they write. Not a column someone might forget to
+exclude: a table the client cannot read at all.
+
+The part that makes it practical rather than merely strict is revocation.
+Deleting the parent row is permitted by policy, and the foreign key cascade
+takes the secret with it — because a referential action runs as the referenced
+table's owner and does not consult the child's RLS. So a user can revoke a
+credential with no server round trip, against a table no client can read.
+
+Everything on top of that follows: every key is per-user, encrypted with
+AES-256-GCM at rest, and verified against the real provider before it is
+accepted. There is deliberately no deployment-wide fallback — setting a
+provider key in the environment does nothing, because nothing reads it.
+
+</Decision>
+
+<Decision
+  title="Every heavy library sits behind a boundary, because the server has a size limit"
+  constraint="A Worker's compressed script is capped at 3 MiB, and all of the server code is one script."
+>
+
+This is the constraint that shaped the frontend more than any design decision.
+three.js, MapLibre, React Flow, the PDF renderer and the spreadsheet parser are
+each large enough to matter, and all of them are optional to most visits.
+
+So each one is behind an explicit dynamic boundary, and it is a rule rather
+than a habit. The clearest case is the career tree: `/career` does not load the
+tree canvas at all, and `/career/tree` does not load three.js until you flip
+the 2D/3D toggle. Two nested boundaries, so the cost lands only on the person
+who asked for it. The PDF worker is copied into static assets at install time
+and served as a file, never bundled anywhere.
+
+The 3D view itself was built to the same standard, and measured rather than
+asserted. Against a two-hundred-stage stress seed it renders in **four draw
+calls** — three instanced meshes and a grid — holding 60fps median with about
+72,000 triangles, with the layout step at 1.2ms. Instance matrices are written
+only when the layout, hover or selection actually changes, never per frame.
+
+The detail I am most pleased with is that the 3D renderer does not compute its
+own layout. It calls the same d3 tidy layout the 2D canvas uses and projects
+the result into world space, so the two renderers cannot disagree about the
+shape of a career — only about how it is drawn.
+
+</Decision>
+
+## Where it ended up
+
+Seventy-one routes, 227 components, 46 tables across 43 migrations, and 914
+unit tests over the parts that can be wrong without looking broken. The tests
+concentrate on pure logic — rank keys, insight intervals, instance maths —
+because a mis-signed quaternion points every branch the wrong way and that is
+neither a type error nor a failed build.
+
+Deployment is a single Worker with seven cron schedules, each offset
+deliberately rather than by default: the metered job feed runs at seven minutes
+past so it never collides with the quarter-hour sweep, and the nightly contact
+purge runs ten minutes before the follow-up drafter so a contact deleted by one
+cannot acquire a draft from the other in the same minute.
+
+Not everything went cleanly, and the decision log records the scars as
+decisions. Partial prerendering is switched off because the Cloudflare adapter
+did not reliably serve resumed RSC streams — it hung the root route and
+corrupted soft navigations. The middleware stays on the legacy filename because
+the adapter only supports the edge runtime. Both are written down with the
+symptom, so the next person does not rediscover them.
+
+<KnownLimits>
+
+The job pipeline's deduplication still misses re-titled reposts. The key is
+built from company, normalised title and location with seniority tokens
+stripped, which handles the same role appearing on three boards but not the
+same role reposted a month later under a different title.
+
+The match score is hand-tuned against a sample of thirty postings. That is a
+heuristic, not an evaluation, and I would not describe it as one. A real
+version needs labelled outcomes — which roles actually led to interviews — and
+that data only accumulates after months of use.
+
+Contact discovery has roughly a fifty percent hit rate, and it cannot be
+improved without buying data I decided not to buy.
+
+The commit history is milestone-shaped — ninety-two commits for a hundred and
+eleven thousand lines — because each one lands a full module with its decision
+entry written alongside. It reads well as a log and badly as a demonstration of
+incremental work, and on a team I would commit far more often.
+
+</KnownLimits>
