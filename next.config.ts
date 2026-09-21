@@ -4,6 +4,9 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // Case studies are .mdx files in content/case-studies.
   pageExtensions: ["ts", "tsx", "mdx"],
+  async redirects() {
+    return [{ source: "/resume", destination: "/resume.pdf", permanent: false }];
+  },
   images: {
     // Project screenshots are local files in public/projects. No remote hosts.
     formats: ["image/avif", "image/webp"],

@@ -284,6 +284,14 @@ Frontmatter would be a second untyped source of truth for the exact numbers
 **D10.** `caseStudy` is optional on `Project`, so the home page cannot link an
 unwritten case study. This is what keeps the site shippable after Phase 3.
 
+**D12.** Colour tokens were picked by eye and three of six pairs failed AA —
+muted text was unreadable on the subtle surface, and neither theme's control
+borders reached 3:1. Replaced with values solved for the target ratio against
+the *harder* of the two backgrounds. `border` and `border-strong` were split:
+decorative rules stay quiet, interactive boundaries meet 1.4.11.
+`tests/contrast.test.ts` reads the stylesheet and asserts all twelve pairs,
+because eye-picked neutrals fail quietly.
+
 **D11.** D10 did not hold, and shipped two 404s. The field gates the link, but
 nothing checked that the slug corresponded to a file, so setting it early
 defeated the guard silently. `tests/links-resolve.test.ts` now asserts the file
@@ -302,9 +310,9 @@ enforced, and every guard needs a test that fails when the guard is bypassed.
 | 3 | Home page, all eight sections | **DONE** |
 | 4 | Case study: Aura (MDX pipeline + layout + write-up) | **DONE** |
 | 5 | Case study: Job Switch Agent | **DONE** |
-| 6 | Real screenshots and figures | next |
-| 7 | SEO, OG images, Lighthouse, a11y | |
-| 8 | Domain, DNS, launch | |
+| 6 | Real screenshots and figures | blocked — needs screenshots |
+| 7 | SEO, OG images, Lighthouse, a11y | **DONE** |
+| 8 | Domain, DNS, launch | blocked — needs the domain |
 | 9 | Project demos — Storybook, healthdecode, Aura URL | separate track |
 
 ---
@@ -342,6 +350,27 @@ eight sections, with the conflation guard in place before any content shipped.
 ### F4. Out of scope, deliberately
 Case-study pages (Phase 4–5) · real images (Phase 6) · OG images and metadata
 (Phase 7) · the domain (Phase 8) · a blog · a contact form · a project index.
+
+## Phases 4–7 — Case studies, SEO and accessibility — **DONE**
+
+### F2. Delivered
+- MDX pipeline, `/work/[slug]` with `dynamicParams = false`, four content
+  blocks (`Decision`, `TradeOff`, `Figure`, `KnownLimits`).
+- Both case studies written — ~1,550 and ~1,400 words, three decisions each,
+  and a "What I'd do differently" section in both.
+- OG images via `next/og`: one shared template, three cards.
+- `metadataBase`, canonicals, `summary_large_image`, JSON-LD `Person`,
+  `sitemap.xml`, `robots.txt`, `/resume` redirect, 404 page.
+- Contrast tokens re-solved; `tests/contrast.test.ts` added.
+
+### F3. Verified
+- 10 static routes. 30 tests pass across 3 files.
+- Every internal link returns 200 against the production build.
+- All three OG routes return `image/png` at 1200×630, ≤ 60 KB.
+- One `h1`, heading order unbroken, `lang="en"`, skip link, no image
+  without `alt`.
+- All twelve contrast pairs meet AA. **Verified by lightening a token and
+  watching two assertions fail.**
 
 ### F5. Open items
 - Confirm the exact domain to buy or point.

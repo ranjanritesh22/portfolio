@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Newsreader } from "next/font/google";
 
 import { profile } from "@/content/profile";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 /**
@@ -34,12 +35,55 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  // Everything relative — canonicals, OG image URLs — resolves against this.
+  metadataBase: new URL(SITE_URL),
   title: {
     default: `${profile.name} — ${profile.role}`,
     template: `%s — ${profile.name}`,
   },
   description: profile.positioning,
   authors: [{ name: profile.name, url: profile.links.github }],
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: profile.name,
+    title: `${profile.name} — ${profile.role}`,
+    description: profile.positioning,
+    url: "/",
+    locale: "en_IN",
+  },
+  twitter: {
+    // The large card is the difference between a link that gets clicked and
+    // one that scrolls past. Without it X renders a bare URL.
+    card: "summary_large_image",
+    title: `${profile.name} — ${profile.role}`,
+    description: profile.positioning,
+  },
+  robots: { index: true, follow: true },
+};
+
+/**
+ * Person schema, so a search result for his name can show the role and the
+ * profiles rather than a bare title tag.
+ */
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: profile.name,
+  url: SITE_URL,
+  email: profile.email,
+  jobTitle: profile.role,
+  description: profile.positioning,
+  sameAs: [profile.links.github, profile.links.linkedin],
+  knowsAbout: [
+    "React",
+    "Next.js",
+    "TypeScript",
+    "Design systems",
+    "PostgreSQL",
+    "Web performance",
+  ],
+  address: { "@type": "PostalAddress", addressCountry: "IN" },
 };
 
 /**
@@ -76,6 +120,10 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
       </head>
       <body>
         <a

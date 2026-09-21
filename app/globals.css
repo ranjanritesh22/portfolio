@@ -23,12 +23,16 @@
   --bg-subtle: #f7f7f8;
   --bg-elevated: #ffffff;
 
+  /* Two border tokens with different jobs, and different rules.
+     `border` is decorative — section rules and card edges — so it stays quiet.
+     `border-strong` outlines interactive controls, where WCAG 1.4.11 wants
+     3:1, so it is solved for that rather than picked by eye. */
   --border: #e6e6e9;
-  --border-strong: #d2d2d8;
+  --border-strong: #94949b; /* 3.01:1 on bg */
 
   --text-1: #17171a; /* headings, primary prose */
   --text-2: #52525b; /* body, secondary */
-  --text-3: #76767f; /* meta, labels, captions */
+  --text-3: #717178; /* meta, labels, captions — 4.52:1 on bg-subtle */
 
   --accent: #4f46e5; /* links, focus rings, one hero mark */
   --accent-fg: #ffffff;
@@ -43,11 +47,11 @@
   --bg-elevated: #17181c;
 
   --border: #24262b;
-  --border-strong: #363941;
+  --border-strong: #5e5e65; /* 3.04:1 on bg */
 
   --text-1: #f2f3f5;
   --text-2: #a4a8b1;
-  --text-3: #797d86;
+  --text-3: #7d7d84; /* 4.55:1 on bg-subtle */
 
   --accent: #8b8df8;
   --accent-fg: #0b0c0e;

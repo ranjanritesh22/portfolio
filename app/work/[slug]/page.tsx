@@ -28,7 +28,23 @@ export async function generateMetadata({
   const { slug } = await params;
   const meta = getCaseStudy(slug);
   if (!meta) return {};
-  return { title: meta.title, description: meta.deck };
+  const url = `/work/${meta.slug}`;
+  return {
+    title: meta.title,
+    description: meta.deck,
+    alternates: { canonical: url },
+    openGraph: {
+      type: "article",
+      title: meta.title,
+      description: meta.deck,
+      url,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: meta.title,
+      description: meta.deck,
+    },
+  };
 }
 
 export default async function CaseStudyPage({
