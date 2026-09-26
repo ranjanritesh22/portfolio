@@ -28,6 +28,26 @@ export function ProjectImage({
 }: ProjectImageProps) {
   const shared = "relative aspect-[16/10] w-full overflow-hidden rounded-lg border border-border-default";
 
+  if (image.video) {
+    return (
+      <figure className={cn(shared, "bg-bg-subtle", className)}>
+        <video
+          src={image.video}
+          poster={image.src ?? undefined}
+          aria-label={image.alt}
+          controls
+          muted
+          loop
+          playsInline
+          // Nothing downloads until the visitor presses play, so a clip on a
+          // card below the fold costs the page nothing.
+          preload="none"
+          className="absolute inset-0 h-full w-full object-cover object-top"
+        />
+      </figure>
+    );
+  }
+
   if (image.src) {
     return (
       <figure className={cn(shared, "bg-bg-subtle", className)}>

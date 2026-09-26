@@ -45,14 +45,14 @@ export const projects: Project[] = [
         status: "private",
         reason: "Private repository — it holds my own financial data. The case study covers the architecture instead.",
       },
-      { kind: "live", status: "planned", note: "A seeded public demo is a later phase." },
+      { kind: "live", status: "available", href: "https://auraos.frontendrealm.com" },
     ],
     cover: {
-      src: null,
+      src: "/projects/aura-dashboard-redacted.png",
       kind: "screenshot",
-      alt: "Aura's job pipeline Kanban board, showing eight stage columns",
+      alt: "Aura's dashboard: net worth, income, expenses and safe-to-spend cards above a cashflow chart, budget burn, recent transactions and travel spend",
       caption:
-        "The job pipeline board. A reorder writes exactly one row, because position is a sortable string rather than an index.",
+        "The dashboard, in production. Finance and Travel read from the same Postgres schema, each table behind row-level security.",
     },
     caseStudy: "aura",
   },
@@ -90,10 +90,11 @@ export const projects: Project[] = [
       },
     ],
     cover: {
-      src: null,
+      src: "/projects/jsa-command-centre.png",
       kind: "screenshot",
-      alt: "The Job Switch Agent command centre, showing the funnel from polled to shortlisted",
-      caption: "The funnel. Most postings are rejected by rules that cost nothing to run.",
+      alt: "The Job Switch Agent command centre: a row of pipeline counts above a ranked list of actions, with the salary and notice figures blurred",
+      caption:
+        "The command centre. Every number on it is a stored row plus arithmetic — nothing on the page asks a model anything.",
     },
     caseStudy: "job-switch-agent",
   },
@@ -101,9 +102,9 @@ export const projects: Project[] = [
   {
     slug: "hermes",
     name: "Hermes Commerce",
-    tagline: "A B2B storefront with approval chains and quote negotiation.",
+    tagline: "An Alokai- and Spartacus-style storefront template for B2B and B2C commerce.",
     summary:
-      "An enterprise B2B commerce platform on Next.js and Medusa v2 that runs with no backend at all — a deterministic catalog sits behind a typed adapter and swaps to a real instance on one environment variable. The B2B layer carries org hierarchies, cost centres, spend limits, multi-level cart approval and RFQ negotiation over a frozen cart.",
+      "A template storefront in the mould of Alokai and Spartacus, on Next.js and Medusa v2: one codebase covers B2C shopping and a B2B layer, and pages are composed from typed CMS content blocks, so an editor reshapes a client's home page without a developer touching a component. It runs with no backend at all — a deterministic catalog sits behind a typed adapter and swaps to a real instance on one environment variable. The B2B layer carries org hierarchies, cost centres, spend limits, multi-level cart approval and RFQ negotiation over a frozen cart.",
     year: "2026",
     status: "wip",
     featured: false,
@@ -114,12 +115,50 @@ export const projects: Project[] = [
       { value: "11", label: "decision records" },
       { value: "16", label: "App Router routes" },
     ],
-    links: [{ kind: "code", status: "planned", note: "Being prepared for publication." }],
+    links: [
+      {
+        kind: "code",
+        status: "private",
+        reason: "Private repository, so the source isn't linked. Its 11 decision records cover the architecture.",
+      },
+    ],
     cover: {
-      src: null,
+      src: "/projects/hermes-storefront.png",
       kind: "screenshot",
-      alt: "Hermes Commerce multi-level cart approval flow",
-      caption: "An approval chain that is derived from spend rules, never stored.",
+      alt: "Hermes storefront home page: dark hero reading 'Commerce at the speed of Hermes' above a row of four featured products",
+      caption: "The hero and the featured-products row are CMS blocks — data mapped to components, not markup.",
+    },
+  },
+
+  {
+    slug: "stadiumx",
+    name: "StadiumX",
+    tagline: "Live cricket as a 3D reconstruction, at 50 KB an over.",
+    summary:
+      "Every ball of a live match rendered inside a model of the actual venue — trajectories synthesised from ball-by-ball event data rather than proprietary tracking, and labelled honestly in the UI as a reconstruction. Built for fans on Indian mobile data: about a megabyte an hour against a video stream's gigabyte.",
+    year: "2026",
+    status: "private",
+    featured: false,
+    tech: ["Next.js 15", "three.js", "React Three Fiber", "TypeScript", "SSE", "Zustand"],
+    domains: ["frontend", "state-data", "backend"],
+    metrics: [
+      { value: "120", label: "tests" },
+      { value: "4", label: "data providers behind one interface", note: "with a shared contract test" },
+      { value: "13", label: "routes" },
+    ],
+    links: [
+      {
+        kind: "code",
+        status: "private",
+        reason: "Private repository, so the source isn't linked.",
+      },
+    ],
+    cover: {
+      src: "/projects/stadiumx-poster.png",
+      video: "/projects/stadiumx-demo.mp4",
+      kind: "screenshot",
+      alt: "StadiumX replaying India v Australia: a 3D stadium view of a Shafali Verma single, with TV, Bat, Bird and Free camera modes",
+      caption: "A synthesised delivery. Labelled in-product as a reconstruction, not as tracking data.",
     },
   },
 
@@ -144,43 +183,16 @@ export const projects: Project[] = [
       { kind: "storybook", status: "planned", note: "Built locally; deployment is a later phase." },
     ],
     cover: {
-      src: null,
+      src: "/projects/storefront-ui-storybook.png",
       kind: "screenshot",
-      alt: "storefront-ui component library in Storybook",
+      alt: "storefront-ui in Storybook: sidebar listing Navigation, Commerce and Components groups — Accordion, MegaMenu, FacetPanel, Badge and more",
       caption: "Seventy-two primitives, each with a story, a test and a token-driven theme.",
     },
   },
 
   {
-    slug: "stadiumx",
-    name: "StadiumX",
-    tagline: "Live cricket as a 3D reconstruction, at 50 KB an over.",
-    summary:
-      "Every ball of a live match rendered inside a model of the actual venue — trajectories synthesised from ball-by-ball event data rather than proprietary tracking, and labelled honestly in the UI as a reconstruction. Built for fans on Indian mobile data: about a megabyte an hour against a video stream's gigabyte.",
-    year: "2026",
-    status: "public",
-    featured: false,
-    tech: ["Next.js 15", "three.js", "React Three Fiber", "TypeScript", "SSE", "Zustand"],
-    domains: ["frontend", "state-data", "backend"],
-    metrics: [
-      { value: "120", label: "tests" },
-      { value: "4", label: "data providers behind one interface", note: "with a shared contract test" },
-      { value: "13", label: "routes" },
-    ],
-    links: [
-      { kind: "code", status: "available", href: "https://github.com/ranjanritesh22/cricketX" },
-    ],
-    cover: {
-      src: null,
-      kind: "screenshot",
-      alt: "StadiumX 3D stadium view rendering a delivery",
-      caption: "A synthesised delivery. Labelled in-product as a reconstruction, not as tracking data.",
-    },
-  },
-
-  {
-    slug: "parchi",
-    name: "Parchi",
+    slug: "luckyu",
+    name: "LuckyU",
     tagline: "A giveaway app where the public key cannot read the odds.",
     summary:
       "A mobile-first draw app where every entry wins something. The interesting part is the security posture: a migration revokes the anonymous role's table access and grants back only display columns, so the public key that reaches every browser cannot read prize tier or remaining stock even if the query asks for them. Draw fairness and claim idempotency are enforced in Postgres, not in the client.",
@@ -196,10 +208,10 @@ export const projects: Project[] = [
     ],
     links: [{ kind: "code", status: "available", href: "https://github.com/ranjanritesh22/luckyU" }],
     cover: {
-      src: null,
+      src: "/projects/luckyu-flow.png",
       kind: "screenshot",
-      alt: "Parchi draw and claim flow",
-      caption: "Draw fairness lives in a Postgres function, where the client cannot reach it.",
+      alt: "LuckyU on a phone, three screens: the catalogue with a Draw a chit button, the 'You've won this' reveal, and the claim form with its claim code",
+      caption: "Browse, draw, claim — shown with the repo's seed catalogue. Draw fairness lives in a Postgres function, where the client cannot reach it.",
     },
   },
 
@@ -223,10 +235,10 @@ export const projects: Project[] = [
       { kind: "live", status: "planned", note: "Pages project configured; deployment is a later phase." },
     ],
     cover: {
-      src: null,
+      src: "/projects/healthdecode-upload.png",
       kind: "screenshot",
-      alt: "HealthDecode lab report explanation view",
-      caption: "Schema-constrained output, so a malformed model response fails loudly instead of rendering.",
+      alt: "HealthDecode upload screen: a choice between English and Hindi above a drop zone for a lab report PDF",
+      caption: "Pick a language, drop a PDF. The model's answer is held to a schema before anything renders.",
     },
   },
 
@@ -248,10 +260,10 @@ export const projects: Project[] = [
     ],
     links: [{ kind: "code", status: "available", href: "https://github.com/ranjanritesh22/promptOS" }],
     cover: {
-      src: null,
+      src: "/projects/promptos-web.png",
       kind: "screenshot",
-      alt: "promptOS extension injecting an optimise button into a chat interface",
-      caption: "Deterministic rewriting, so the same prompt always produces the same improvement.",
+      alt: "promptOS web app: a wordy prompt beside its shorter rewrite, with a token count on each side",
+      caption: "The web demo runs the same engine as the extension, entirely in the browser.",
     },
   },
 ];

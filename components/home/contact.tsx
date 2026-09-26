@@ -56,18 +56,6 @@ export function SiteFooter() {
         <p>
           © {new Date().getFullYear()} {profile.name}
         </p>
-        <p>
-          Built with Next.js and Tailwind.{" "}
-          <a
-            href="https://github.com/ranjanritesh22/portfolio"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-text-2 underline decoration-border-strong underline-offset-4 hover:text-accent"
-          >
-            Source for this site
-          </a>
-          .
-        </p>
       </div>
     </footer>
   );

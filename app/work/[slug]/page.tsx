@@ -67,7 +67,7 @@ export default async function CaseStudyPage({
           <div className="flex items-center justify-between">
             <Link
               href="/"
-              className="font-mono text-xs tracking-[0.14em] text-text-3 uppercase hover:text-text-1"
+              className="inline-flex min-h-11 items-center font-mono text-xs tracking-[0.14em] text-text-3 uppercase hover:text-text-1"
             >
               ← Ritesh Ranjan
             </Link>

@@ -1,23 +1,4 @@
-import { capabilities, principles } from "@/content/capabilities";
-
-export function Capabilities() {
-  return (
-    <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-      {capabilities.map((group) => (
-        <div key={group.title}>
-          <h3 className="text-base text-text-1">{group.title}</h3>
-          <ul className="mt-4 space-y-1.5">
-            {group.items.map((item) => (
-              <li key={item} className="text-sm text-text-2">
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </div>
-  );
-}
+import { principles } from "@/content/capabilities";
 
 /**
  * Values, each one attached to something that can be checked. The final line

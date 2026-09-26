@@ -82,6 +82,12 @@ export type ProjectImage = {
   kind: MediaKind;
   alt: string;
   caption?: string;
+  /**
+   * A short demo clip under /projects/, with `src` as its poster. It plays on
+   * click and never autoplays: motion that starts by itself needs a pause
+   * control and a reduced-motion check, which means a client component.
+   */
+  video?: string;
 };
 
 export type ProjectStatus = "private" | "public" | "wip";
@@ -129,6 +135,8 @@ export type OwnershipLayer = {
 
 export type Role = {
   company: string;
+  /** Path under `public/`. The company's own mark, shown in "Where I've worked". */
+  logo: string;
   title: string;
   /** e.g. "Dec 2024" */
   start: string;
@@ -140,10 +148,32 @@ export type Role = {
   tech: string[];
 };
 
+/**
+ * A logo the stack section can draw. Closed on purpose: adding a tool means
+ * adding its logo to `components/primitives/brand-icon.tsx`, and the compiler
+ * refuses the entry until that happens.
+ */
+export type BrandIconName =
+  | "typescript" | "javascript" | "html5" | "css" | "sass"
+  | "react" | "nextjs" | "angular" | "reactquery" | "ngrx" | "rxjs"
+  | "tailwindcss" | "shadcnui" | "storybook"
+  | "nodejs" | "postgresql" | "supabase" | "drizzle" | "graphql" | "mysql"
+  | "claude" | "mcp" | "ollama"
+  | "vite" | "webpack" | "turborepo"
+  | "vitest" | "jest" | "testinglibrary" | "cypress"
+  | "gitlab" | "jenkins" | "cloudflareworkers" | "vercel";
+
+export type StackTool = {
+  name: string;
+  /** Omitted where no official mark is available; a monogram renders instead. */
+  icon?: BrandIconName;
+};
+
 export type CapabilityGroup = {
-  /** The four groups carry the full-stack claim structurally — see CLAUDE.md §A3. */
   title: string;
-  items: string[];
+  tools: StackTool[];
+  /** Practices rather than products — they have no logo, and render as a line. */
+  practices?: string[];
 };
 
 export type Profile = {
@@ -162,4 +192,6 @@ export type Profile = {
     twitter?: string;
   };
   resumePath: string;
+  /** A square headshot in `public/`. */
+  photo: { src: string; alt: string };
 };

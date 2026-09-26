@@ -48,12 +48,12 @@ Section order and the proof each one carries:
 
 | # | Section | Carries |
 |---|---|---|
-| 1 | Hero | Role, level, location, contact. One positioning sentence that leads with frontend and ends at the schema and the deploy. |
+| 1 | Hero | Role, level, location, contact. A two-sentence intro (D19). |
+| 1b | Experience | Moved up under the hero (D14). Knack / Brane / Keka, each with its logo. |
 | 2 | Selected work | Aura, then Job Switch Agent. Depth and judgement. The full-stack claim is *demonstrated here, before it is stated anywhere*. |
 | 3 | How far I take a product | The ownership table — four layers, each citing a specific artefact. Placed after the work so it reads as a summary of evidence, not an opening assertion. |
 | 4 | More work | Six compact cards. Range, and a consistent standard across very different sizes. |
-| 5 | Experience | Knack / Brane / Keka. Seniority evidenced through ownership, standards and mentoring. |
-| 6 | Capabilities | Four equal groups, so backend reads as a column already occupied. |
+| 5 | Tech stack | Eight groups of tools with logos, mirroring the résumé's skills. Moved below the work (D19). |
 | 7 | How I work | Values, each pointing at something checkable. The last line is a self-critique on purpose. |
 | 8 | Contact | The only place intent is stated outright. |
 
@@ -84,7 +84,7 @@ Two supporting mechanisms:
 | Long-form | `@next/mdx`, build-time | Two case studies. Velite or Contentlayer would be infrastructure larger than the content it serves. |
 | Structured content | Typed TS modules in `content/` | Compiler and tests police it. **No frontmatter** — it would be a second, untyped source of truth for metrics. |
 | Class utility | A 6-line `cn()` | No `clsx`, no `cva`, no `tailwind-merge`. A closed 8-component set has no override-collision problem to solve. |
-| Icons | Inline SVG, 8 of them | An icon package would outweigh the site. |
+| Icons | Inline SVG for UI; `simple-icons` for tool logos | UI icons are hand-drawn. Tool logos come from `simple-icons`, imported only by Server Components, so it ships zero client JS (D13). |
 | Tests | Vitest | Content invariants, not component coverage. See §C2. |
 | Deploy | Vercel + custom domain | Next 16 is first-party; `next/og` and static generation need no config. |
 
@@ -103,7 +103,7 @@ app/           layout (fonts, theme script, skip link), page, globals.css
 content/       types.ts is the contract; everything else is typed data
 components/
   primitives/  Container Section Tag MetricList LinkButton ProjectImage
-               ThemeToggle icons — the only files allowed raw Tailwind spacing
+               ThemeToggle icons BrandIcon — the only files allowed raw Tailwind spacing
   home/        Hero, project cards, ownership table, experience, contact
   case-study/  (phase 4)
 lib/cn.ts
@@ -149,7 +149,7 @@ systems:
 |---|---|---|---|
 | 1 | **Knack Systems internal storefront platform** — slot/outlet framework, 72 primitives, 74 Storybook stories, **7 gateway adapters**, normalizer chain, 706-case suite, Smart Quick Order, Electrolux Spartacus + Avantor ATG migrations | `content/experience.ts`, **only** | None. Employer work. Nobody expects client code. |
 | 2 | **`storefront-ui`** — personal open-source package | `content/projects.ts` | Public repo |
-| 3 | **Hermes** — personal B2B commerce app | `content/projects.ts` | None yet |
+| 3 | **Hermes** — personal B2B and B2C storefront template | `content/projects.ts` | None — private repo |
 
 The 72/74/706/7 figures belong to **#1 and only #1**.
 
@@ -192,7 +192,7 @@ Live run: 686 jobs stored → 527 rule-rejected → 30 shortlisted → **0 model
 cases** · 635 files · ~25.6k lines · 158 exports
 **Hermes** — 16 routes · 50 components · 336 tests + 4 Playwright specs · 11 ADRs
 **StadiumX** — 13 routes · 29 components · 120 tests
-**Parchi** — 9 routes · 33 components · 7 migrations · 0 tests
+**LuckyU** (formerly Parchi) — 9 routes · 33 components · 7 migrations · 0 tests
 **healthdecode** — 4 serverless functions · 22 files
 **promptOS** — 20 tests · 22 files
 
@@ -298,6 +298,77 @@ defeated the guard silently. `tests/links-resolve.test.ts` now asserts the file
 exists. The lesson is the general one: a rule enforced by remembering is not
 enforced, and every guard needs a test that fails when the guard is bypassed.
 
+
+**D13.** Tech stack with logos moved directly under the hero, ahead of Selected
+work, at his request; the old Capabilities section was folded into it. This
+knowingly overrides §A3's depth-before-breadth order: a recruiter skimming for
+keywords should find them before scrolling, and the case studies still carry
+the evidence. Logos come from `simple-icons` (Server Components only, so client
+JS was unchanged, measured). Brand colours fall back to the heading colour below
+1.5:1 against the chip surface, a check that `tests/brand-color.test.ts` keeps
+tied to the stylesheet.
+
+**D14.** Experience moved to sit directly under the tech stack, ahead of the
+projects, and an employer-logo strip added below them, at his request. The
+logos are 200×200 marks self-hosted in `public/companies/`, one per role, and
+`tests/company-logos.test.ts` fails if a role's logo file is missing.
+
+**D15.** Aura's `live` link switched from `planned` to `available` once the
+production deployment at `auraos.frontendrealm.com` was confirmed serving
+(HTTP 200, redirects to `/login`). The app is auth-gated and holds personal
+financial data, so a visitor lands on the sign-in screen, not a demo; the
+card's private-repo reason and the case study carry the rest.
+
+**D16.** Hermes's card was rewritten around the template positioning, using
+only claims checked against the repo: B2C shop plus B2B layer, and CMS-block
+composition (ADR 0006). "No coding" was deliberately left out — blocks cover the
+home page only and the content is still in-repo JSON. Its `code` link is
+`private`, not `available`: `ranjanritesh22/hermes-ecommerce` is a private repo
+(confirmed by the owner; signed-out requests return 404). A first pass linked it
+after a mistaken visibility check, so a repo's visibility is verified against
+the API, not a page fetch.
+
+**D17.** StadiumX's repo (`ranjanritesh22/cricketX`) was made private by the
+owner; the GitHub API returns 404 signed out. Its `code` link moved from
+`available` to `private` and its status to `private`, so the card no longer
+links to a 404.
+
+**D18.** `ProjectImage.video` added so a card can carry a short demo clip, with
+`src` as its poster. Native `<video controls preload="none">`, click to play,
+never autoplay: autoplaying motion needs a pause control and a reduced-motion
+check, i.e. a client component, and §A2 rules out flashiness anyway. StadiumX's
+34.6 s, 2940-wide, 11 MB screen recording was re-encoded to 1280-wide H.264,
+no audio, faststart, 770 KB. `tests/project-images.test.ts` fails if a video
+file is missing or has no poster.
+
+**D19.** Tech stack moved from under the hero to after More work, reversing
+D13's placement; the "Where I've worked" logo strip from D14 removed; the hero
+intro cut from a 60-word résumé summary to two sentences. The target is now
+full-time roles at US companies, startups and product companies, whose readers
+hire on shipped work and want the gist in seconds. The logo strip repeated the
+Experience section, which still shows each employer's logo, so
+`tests/company-logos.test.ts` still applies. HealthDecode and promptOS got real
+screenshots, captured from their local dev servers. LuckyU needs Supabase to
+run, so its screens were captured against a throwaway local mock of the
+Supabase REST API serving its own `003_seed.sql` catalogue, with no change to
+its repo; the seed has no photos, which is why the cards read "No photo yet".
+
+**D20.** AI-assisted development made visible, at his request: a third hero
+sentence, an "AI-assisted development" stack group (Claude Code, plus agentic
+coding, AI code review, AI-assisted debugging and spec-driven development), and
+a How I work principle. The claim is kept to what a reviewer can check: all
+nine project repos track a CLAUDE.md (verified 2026-09-26), and four of them
+plus this one are public. No speed-up figure is stated — none was measured, and
+§C3 applies. It is scoped to personal projects; nothing says the employer roles
+used an agent.
+
+**D21.** A headshot added to the hero, at his request, reversing the hero's
+original "no photo". For a cold link to a US hiring manager a face makes the
+page, and the person, easier to remember. The source was a 4000×3000 phone
+photo stored sideways; it was rotated, cropped to a square and resized to a
+480px JPEG (about 45 KB), checked for GPS metadata (none). It is `priority`
+because it sits above the fold, and it is also the Person JSON-LD `image`.
+
 ---
 
 # PART E — PHASES
@@ -376,4 +447,4 @@ Case-study pages (Phase 4–5) · real images (Phase 6) · OG images and metadat
 - Confirm the exact domain to buy or point.
 - Confirm a Twitter/X handle for `profile.links`.
 - Add `public/resume.pdf` — the hero links to it and it does not exist yet.
-- Aura's live Worker URL is unconfirmed; the `live` link stays `planned`.
+- Aura's live URL is confirmed (`https://auraos.frontendrealm.com`, D15); the `live` link is `available`.

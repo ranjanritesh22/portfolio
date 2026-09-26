@@ -96,8 +96,8 @@
   --text-3xl: 2.4375rem; /* 39 */
   --text-4xl: 3.0625rem; /* 49 */
 
-  --spacing-section: 6rem; /* 96 — desktop section rhythm */
-  --spacing-section-sm: 4rem; /* 64 — mobile */
+  --spacing-section: 3.5rem; /* 56 — desktop; two sections sit 112 apart */
+  --spacing-section-sm: 2.5rem; /* 40 — mobile; 80 apart */
 }
 
 /* ────────────────────────────────────────────────────────────────────────── */

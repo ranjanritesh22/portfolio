@@ -31,7 +31,7 @@ export function DomainStrip({
       {domains.map((domain) => (
         <li
           key={domain}
-          className="font-mono text-[11px] tracking-[0.1em] text-text-3 uppercase"
+          className="font-mono text-xs tracking-[0.1em] text-text-3 uppercase"
         >
           {LABELS[domain]}
         </li>

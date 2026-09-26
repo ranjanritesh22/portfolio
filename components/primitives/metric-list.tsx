@@ -10,10 +10,17 @@ import { cn } from "@/lib/cn";
 export function MetricList({
   metrics,
   size = "sm",
+  columns = 4,
   className,
 }: {
   metrics: Metric[];
   size?: "sm" | "lg";
+  /**
+   * 3 for half-width cards, where four columns squeeze every label onto two
+   * lines. "split" for a column that is full width on phones but halves on
+   * tablets, where four columns broke "46 / 46" across two lines at 768px.
+   */
+  columns?: 3 | 4 | "split";
   className?: string;
 }) {
   if (metrics.length === 0) return null;
@@ -22,9 +29,9 @@ export function MetricList({
     <dl
       className={cn(
         "grid gap-x-6 gap-y-5",
-        size === "lg"
-          ? "grid-cols-2 sm:grid-cols-4"
-          : "grid-cols-2 sm:grid-cols-4",
+        columns === 3 && "grid-cols-3",
+        columns === 4 && "grid-cols-2 sm:grid-cols-4",
+        columns === "split" && "grid-cols-2 sm:grid-cols-4 md:grid-cols-2 lg:grid-cols-4",
         className,
       )}
     >
@@ -38,7 +45,7 @@ export function MetricList({
           >
             {metric.value}
           </dd>
-          <dt className="mt-0.5 text-xs text-text-3">{metric.label}</dt>
+          <dt className="mt-1 text-xs leading-snug text-balance text-text-3">{metric.label}</dt>
         </div>
       ))}
     </dl>

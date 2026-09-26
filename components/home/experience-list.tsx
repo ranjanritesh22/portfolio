@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { TagList } from "@/components/primitives/tag";
 import { education, experience } from "@/content/experience";
 
@@ -10,6 +12,14 @@ export function ExperienceList() {
           className="grid gap-4 border-t border-border-default pt-8 md:grid-cols-[minmax(0,14rem)_1fr] md:gap-10"
         >
           <div>
+            <Image
+              src={role.logo}
+              alt=""
+              width={48}
+              height={48}
+              // Decorative: the company name is the heading directly below.
+              className="mb-4 size-12 rounded-lg border border-border-default object-cover"
+            />
             <h3 className="text-lg text-text-1">{role.company}</h3>
             <p className="mt-1 text-sm text-text-2">{role.title}</p>
             <p className="mt-2 font-mono text-xs text-text-3">

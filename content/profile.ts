@@ -2,21 +2,18 @@ import type { Profile } from "./types";
 
 export const profile: Profile = {
   name: "Ritesh Ranjan",
-  role: "Senior Frontend Engineer",
+  role: "Software Engineer – Frontend",
 
   /**
-   * The one sentence that has to do the most work on this site.
-   *
-   * It leads with frontend because that is the real depth, and it ends at the
-   * schema and the deploy because that is the full-stack claim. The claim is
-   * made once, here, and then evidenced for the rest of the page rather than
-   * repeated — see CLAUDE.md §A3.
+   * The hero intro, and the meta description. Leads with frontend depth; the
+   * end-to-end ownership is evidenced by the work below rather than claimed
+   * here — see CLAUDE.md §A3.
    */
   positioning:
-    "I build enterprise commerce and SaaS frontends in React, Next.js and TypeScript — and own them end to end, through the Postgres schema and the deploy.",
+    "Frontend engineer with 4+ years building enterprise SaaS products and web platforms in React, Next.js and TypeScript. I build the design systems and frontend platforms other teams ship on, and own features from architecture to production. I build with Claude Code every day, and every repo carries the spec and tests that keep agent-written code honest.",
 
   location: "India",
-  availability: "Open to remote, and to Hyderabad, Bangalore, Pune or Delhi NCR",
+  availability: "Open to remote roles, and to hybrid or on-site roles in Hyderabad, Bangalore, Pune or Delhi NCR",
 
   email: "reachranjanritesh@gmail.com",
   phone: "+91 9431877305",
@@ -28,4 +25,6 @@ export const profile: Profile = {
   },
 
   resumePath: "/resume.pdf",
+
+  photo: { src: "/ritesh-ranjan.jpg", alt: "Ritesh Ranjan" },
 };

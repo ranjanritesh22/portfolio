@@ -15,6 +15,7 @@ import type { Role } from "./types";
 export const experience: Role[] = [
   {
     company: "Knack Systems",
+    logo: "/companies/knack.jpg",
     title: "Associate Consultant, Frontend Engineer",
     start: "Dec 2024",
     end: null,
@@ -32,6 +33,7 @@ export const experience: Role[] = [
 
   {
     company: "Brane Enterprises",
+    logo: "/companies/brane.jpg",
     title: "SDE 1, Frontend",
     start: "Sep 2023",
     end: "Dec 2024",
@@ -46,8 +48,9 @@ export const experience: Role[] = [
 
   {
     company: "Keka HR",
-    title: "Frontend Developer → SDE 1, Frontend",
-    start: "Aug 2022",
+    logo: "/companies/keka.jpg",
+    title: "Frontend Developer Intern → SDE 1, Frontend",
+    start: "Jan 2022",
     end: "Sep 2023",
     location: "Hyderabad",
     bullets: [

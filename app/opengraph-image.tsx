@@ -13,7 +13,7 @@ export default function Image() {
       <OgCard
         eyebrow={profile.name}
         title={profile.role}
-        subtitle="React, Next.js and TypeScript — owned end to end, through the Postgres schema and the deploy."
+        subtitle="Enterprise SaaS products and web platforms in React, Next.js, TypeScript and Angular."
         metrics={[
           { value: "4+ yrs", label: "shipping frontend" },
           { value: "2", label: "products built solo" },

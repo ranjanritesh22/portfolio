@@ -11,7 +11,8 @@ type SectionProps = {
 };
 
 /**
- * One section rhythm for the whole page.
+ * One section rhythm for the whole page: padding is applied on both sides, so
+ * the gap between two sections is twice the token (112px desktop, 80px mobile).
  *
  * The label is a visually-small `h2` rather than a styled `div`: screen-reader
  * users navigate by heading, so the document outline has to stay real even

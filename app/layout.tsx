@@ -71,6 +71,7 @@ const personJsonLd = {
   "@type": "Person",
   name: profile.name,
   url: SITE_URL,
+  image: `${SITE_URL}${profile.photo.src}`,
   email: profile.email,
   jobTitle: profile.role,
   description: profile.positioning,

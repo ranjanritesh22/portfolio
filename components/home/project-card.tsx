@@ -35,7 +35,7 @@ export function FeaturedProject({
         <p className="mt-2 text-lg text-text-2">{project.tagline}</p>
         <p className="mt-4 text-text-2">{project.summary}</p>
 
-        <MetricList metrics={project.metrics} className="mt-8" />
+        <MetricList metrics={project.metrics} columns="split" className="mt-8" />
 
         <DomainStrip domains={project.domains} className="mt-8" />
         <TagList items={project.tech} className="mt-4" />
@@ -44,7 +44,7 @@ export function FeaturedProject({
           {project.caseStudy ? (
             <Link
               href={`/work/${project.slug}`}
-              className="group inline-flex items-center gap-2 text-sm font-medium text-accent"
+              className="group inline-flex min-h-11 items-center gap-2 text-sm font-medium text-accent"
             >
               Read the case study
               <ArrowRightIcon className="size-4 transition-transform group-hover:translate-x-0.5" />
@@ -69,23 +69,32 @@ export function FeaturedProject({
   );
 }
 
-/** The compact card, for everything without a case study. */
+/**
+ * The compact card, for everything without a case study.
+ *
+ * Each card is a subgrid spanning eight rows of the parent grid, so image,
+ * title, tagline, summary, metrics, domains, tags and links each share one
+ * track across a row of cards. Unequal copy then pads the track instead of
+ * pushing everything below it out of line with the neighbouring card.
+ */
 export function ProjectCard({ project }: { project: Project }) {
   return (
-    <article className="flex flex-col border-t border-border-default pt-6">
-      <h3 className="text-lg text-text-1">{project.name}</h3>
+    <article className="row-span-8 grid grid-rows-subgrid gap-y-0 border-t border-border-default pt-6 pb-12">
+      <ProjectImage image={project.cover} label={project.name} />
+
+      <h3 className="mt-5 text-lg text-text-1">{project.name}</h3>
       <p className="mt-1 text-sm text-text-2">{project.tagline}</p>
       <p className="mt-3 text-sm text-text-2">{project.summary}</p>
 
-      <MetricList metrics={project.metrics.slice(0, 3)} className="mt-6" />
+      <MetricList
+        metrics={project.metrics.slice(0, 3)}
+        columns={3}
+        className="mt-6"
+      />
 
-      {/* mt-auto pins the tail of every card to the same baseline, so a grid of
-          cards with unequal copy still reads as a row rather than a ragged set. */}
-      <div className="mt-auto pt-6">
-        <DomainStrip domains={project.domains} />
-        <TagList items={project.tech} className="mt-3" />
-        <ProjectLinks links={project.links} className="mt-4" />
-      </div>
+      <DomainStrip domains={project.domains} className="mt-6" />
+      <TagList items={project.tech} className="mt-3 content-start" />
+      <ProjectLinks links={project.links} className="mt-4" />
     </article>
   );
 }

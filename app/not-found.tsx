@@ -14,13 +14,13 @@ export default function NotFound() {
           It may have moved, or the link may be wrong.
         </p>
         <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-          <Link href="/" className="text-accent">
+          <Link href="/" className="inline-flex min-h-11 items-center text-accent">
             Home
           </Link>
-          <Link href="/work/aura" className="text-accent">
+          <Link href="/work/aura" className="inline-flex min-h-11 items-center text-accent">
             Aura case study
           </Link>
-          <Link href="/work/job-switch-agent" className="text-accent">
+          <Link href="/work/job-switch-agent" className="inline-flex min-h-11 items-center text-accent">
             Job Switch Agent case study
           </Link>
         </div>

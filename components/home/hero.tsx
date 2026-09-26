@@ -1,8 +1,10 @@
+import Image from "next/image";
+
 import { ThemeToggle } from "@/components/primitives/theme-toggle";
 import { LinkButton } from "@/components/primitives/link-button";
 import { Container } from "@/components/primitives/container";
 import {
-  DownloadIcon,
+  ExternalIcon,
   GitHubIcon,
   LinkedInIcon,
   MailIcon,
@@ -11,9 +13,10 @@ import { profile } from "@/content/profile";
 
 /**
  * Everything a recruiter needs in five seconds: who, what level, where, and
- * how to make contact. No photo, no animation, no scroll reveal — the content
- * must exist at first paint for crawlers and link previews, and a hero that
- * animates in is a hero that is blank when a screenshot is taken.
+ * how to make contact. A photo puts a face to a cold link (D21). No animation,
+ * no scroll reveal — the content must exist at first paint for crawlers and
+ * link previews, and a hero that animates in is a hero that is blank when a
+ * screenshot is taken.
  */
 export function Hero() {
   return (
@@ -27,6 +30,14 @@ export function Hero() {
         </div>
 
         <div className="mt-16 sm:mt-24">
+          <Image
+            src={profile.photo.src}
+            alt={profile.photo.alt}
+            width={112}
+            height={112}
+            priority
+            className="mb-8 size-24 rounded-full border border-border-default object-cover sm:size-28"
+          />
           <h1 className="text-3xl sm:text-4xl">{profile.role}</h1>
 
           <p className="mt-6 max-w-[54ch] text-lg text-text-2">
@@ -44,7 +55,7 @@ export function Hero() {
             </div>
             <div className="flex gap-2">
               <dt className="text-text-3">Open to</dt>
-              <dd className="text-text-1">Remote & hybrid</dd>
+              <dd className="text-text-1">Remote, hybrid & on-site</dd>
             </div>
           </dl>
 
@@ -54,7 +65,7 @@ export function Hero() {
               Get in touch
             </LinkButton>
             <LinkButton href={profile.resumePath} external>
-              <DownloadIcon className="size-4" />
+              <ExternalIcon className="size-4" />
               Résumé
             </LinkButton>
             <LinkButton href={profile.links.github} external>

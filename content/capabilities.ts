@@ -1,43 +1,106 @@
 import type { CapabilityGroup, OwnershipLayer } from "./types";
 
 /**
- * Four groups, rendered at equal weight.
+ * The stack, as it sits directly under the hero.
  *
- * The grouping is the argument: backend and delivery are columns he already
- * occupies, not a wish list appended to a frontend résumé. Nothing here is
- * rated, scored or bar-charted — a self-assessed proficiency number is worth
- * nothing to a reader and invites an argument in the interview.
+ * Mirrors the résumé's Technical Skills so a recruiter matching keywords finds
+ * the same words in both places. Nothing is rated, scored or bar-charted — a
+ * self-assessed proficiency number is worth nothing to a reader and invites an
+ * argument in the interview.
  */
 export const capabilities: CapabilityGroup[] = [
   {
-    title: "Frontend & platform",
-    items: [
-      "React", "Next.js (App Router, RSC, SSR/ISR)", "TypeScript", "Angular",
-      "TanStack Query", "Zustand", "NgRx / RxJS", "Tailwind CSS",
-      "Design systems & tokens", "Storybook", "WCAG accessibility",
-      "Micro-frontends (Module Federation)",
+    title: "Languages",
+    tools: [
+      { name: "TypeScript", icon: "typescript" },
+      { name: "JavaScript", icon: "javascript" },
+      { name: "HTML5", icon: "html5" },
+      { name: "CSS3", icon: "css" },
+      { name: "Sass / SCSS", icon: "sass" },
+      { name: "SQL" },
     ],
+  },
+  {
+    title: "Frontend",
+    tools: [
+      { name: "React", icon: "react" },
+      { name: "Next.js", icon: "nextjs" },
+      { name: "Angular", icon: "angular" },
+      { name: "TanStack Query", icon: "reactquery" },
+      { name: "Zustand" },
+      { name: "NgRx", icon: "ngrx" },
+      { name: "RxJS", icon: "rxjs" },
+    ],
+    practices: ["App Router & RSC", "SSR / ISR", "Micro-frontends"],
+  },
+  {
+    title: "UI & design systems",
+    tools: [
+      { name: "Tailwind CSS", icon: "tailwindcss" },
+      { name: "shadcn/ui", icon: "shadcnui" },
+      { name: "Storybook", icon: "storybook" },
+      { name: "Angular Material", icon: "angular" },
+    ],
+    practices: ["Design tokens", "Theming", "WCAG accessibility", "Responsive design"],
   },
   {
     title: "Backend & data",
-    items: [
-      "Node.js", "PostgreSQL", "Row-level security", "Schema design & migrations",
-      "Supabase", "Drizzle", "REST & GraphQL", "SQL",
+    tools: [
+      { name: "Node.js", icon: "nodejs" },
+      { name: "PostgreSQL", icon: "postgresql" },
+      { name: "Supabase", icon: "supabase" },
+      { name: "Drizzle", icon: "drizzle" },
+      { name: "GraphQL", icon: "graphql" },
+      { name: "MySQL", icon: "mysql" },
     ],
+    practices: ["REST APIs", "Schema design & migrations", "Row-level security"],
   },
   {
     title: "AI engineering",
-    items: [
-      "LLM product features", "Structured output & schema constraints",
-      "Agentic workflows", "Prompt-injection defence", "Local models (Ollama)",
-      "MCP servers & connectors",
+    tools: [
+      { name: "OpenAI API" },
+      { name: "Claude API", icon: "claude" },
+      { name: "MCP", icon: "mcp" },
+      { name: "Ollama", icon: "ollama" },
+    ],
+    practices: [
+      "LLM product features", "Agentic workflows", "Structured output",
+      "Prompt engineering", "Prompt-injection defence",
     ],
   },
   {
-    title: "Build, test & ship",
-    items: [
-      "Turborepo", "Vite & Webpack", "Vitest / Jest / RTL", "Playwright",
-      "Cloudflare Workers", "Vercel", "CI/CD", "Core Web Vitals",
+    title: "AI-assisted development",
+    tools: [{ name: "Claude Code", icon: "claude" }],
+    practices: [
+      "Agentic coding", "AI code review", "AI-assisted debugging",
+      "Spec-driven development (CLAUDE.md)",
+    ],
+  },
+  {
+    title: "Build & performance",
+    tools: [
+      { name: "Vite", icon: "vite" },
+      { name: "Webpack", icon: "webpack" },
+      { name: "Turborepo", icon: "turborepo" },
+    ],
+    practices: [
+      "Module Federation", "Code splitting", "Lazy loading", "Tree shaking",
+      "Caching", "Core Web Vitals",
+    ],
+  },
+  {
+    title: "Testing & delivery",
+    tools: [
+      { name: "Vitest", icon: "vitest" },
+      { name: "Jest", icon: "jest" },
+      { name: "Testing Library", icon: "testinglibrary" },
+      { name: "Cypress", icon: "cypress" },
+      { name: "Playwright" },
+      { name: "GitLab CI", icon: "gitlab" },
+      { name: "Jenkins", icon: "jenkins" },
+      { name: "Azure DevOps" },
+      { name: "Cloudflare Workers", icon: "cloudflareworkers" },
+      { name: "Vercel", icon: "vercel" },
     ],
   },
 ];
@@ -100,6 +163,10 @@ export const principles: { text: string; proof: string }[] = [
   {
     text: "Decisions get written down while they are still fresh.",
     proof: "A 3,445-line decision log in Aura; 81 numbered entries in Job Switch Agent.",
+  },
+  {
+    text: "A coding agent makes me faster. It does not make the decisions.",
+    proof: "Every project on this site was built with Claude Code, working from a CLAUDE.md spec checked into its repo. On this site, the rules an agent must not break — never mixing employer and personal figures — are tests, not reminders.",
   },
   {
     text: "Architecture boundaries belong in the linter, not in a convention nobody remembers.",

@@ -72,16 +72,6 @@ export function LinkedInIcon({ className }: IconProps) {
   );
 }
 
-export function DownloadIcon({ className }: IconProps) {
-  return (
-    <svg {...base} className={className}>
-      <path d="M12 3.5v11" />
-      <path d="m7.5 10.5 4.5 4.5 4.5-4.5" />
-      <path d="M4.5 19.5h15" />
-    </svg>
-  );
-}
-
 export function LockIcon({ className }: IconProps) {
   return (
     <svg {...base} className={className}>
