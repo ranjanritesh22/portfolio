@@ -1,4 +1,4 @@
-# riteshranjan.dev
+# riteshranjan.frontendrealm.com
 
 My portfolio. Built so that the repository is worth reading too, since anyone
 evaluating me for a frontend role is as likely to open this as the site.

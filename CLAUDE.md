@@ -1,6 +1,6 @@
 # CLAUDE.md — Portfolio
 
-The working spec for `riteshranjan.dev`. Read PART C before changing any
+The working spec for `riteshranjan.frontendrealm.com`. Read PART C before changing any
 content; §C1 and §C3 are the two rules that protect the thing this site is
 for.
 
@@ -374,6 +374,13 @@ and `app/apple-icon.png` (180px), picked up by Next's file convention with no
 metadata code. The source had a semi-transparent smudged halo that looked dirty
 on a light tab bar, so it was cropped and flattened onto solid black.
 
+**D23.** The domain is `riteshranjan.frontendrealm.com`, where the site is
+already served. The previous `SITE_URL` fallback was a placeholder `.dev`
+domain, so canonicals, OG URLs, the sitemap and the JSON-LD all pointed a
+shared link at a domain that was never bought. The fallback in `lib/site.ts`
+now names the real host, and `NEXT_PUBLIC_SITE_URL` on Vercel must match it
+or be unset.
+
 ---
 
 # PART E — PHASES
@@ -388,7 +395,7 @@ on a light tab bar, so it was cropped and flattened onto solid black.
 | 5 | Case study: Job Switch Agent | **DONE** |
 | 6 | Real screenshots and figures | blocked — needs screenshots |
 | 7 | SEO, OG images, Lighthouse, a11y | **DONE** |
-| 8 | Domain, DNS, launch | blocked — needs the domain |
+| 8 | Domain, DNS, launch | **DONE** — `riteshranjan.frontendrealm.com` (D23) |
 | 9 | Project demos — Storybook, healthdecode, Aura URL | separate track |
 
 ---
@@ -449,7 +456,7 @@ Case-study pages (Phase 4–5) · real images (Phase 6) · OG images and metadat
   watching two assertions fail.**
 
 ### F5. Open items
-- Confirm the exact domain to buy or point.
+- Domain confirmed: `riteshranjan.frontendrealm.com` (D23).
 - Confirm a Twitter/X handle for `profile.links`.
 - Add `public/resume.pdf` — the hero links to it and it does not exist yet.
 - Aura's live URL is confirmed (`https://auraos.frontendrealm.com`, D15); the `live` link is `available`.

@@ -8,7 +8,7 @@
  * should be the correct one.
  */
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://riteshranjan.dev"
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://riteshranjan.frontendrealm.com"
 ).replace(/\/$/, "");
 
 export function absoluteUrl(path = "/"): string {
