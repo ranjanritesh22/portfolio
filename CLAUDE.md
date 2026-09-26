@@ -369,6 +369,11 @@ photo stored sideways; it was rotated, cropped to a square and resized to a
 480px JPEG (about 45 KB), checked for GPS metadata (none). It is `priority`
 because it sits above the fold, and it is also the Person JSON-LD `image`.
 
+**D22.** Favicon added, at his request: his "R" mark as `app/icon.png` (192px)
+and `app/apple-icon.png` (180px), picked up by Next's file convention with no
+metadata code. The source had a semi-transparent smudged halo that looked dirty
+on a light tab bar, so it was cropped and flattened onto solid black.
+
 ---
 
 # PART E — PHASES
